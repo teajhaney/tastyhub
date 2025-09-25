@@ -1,5 +1,12 @@
 import { CreateUserParams, SignInParams } from '@/type';
-import { Account, Avatars, Client, ID, TablesDB } from 'react-native-appwrite';
+import {
+  Account,
+  Avatars,
+  Client,
+  ID,
+  Query,
+  TablesDB,
+} from 'react-native-appwrite';
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
@@ -62,6 +69,24 @@ export const signIn = async ({ email, password }: SignInParams) => {
     });
     return session;
   } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export const getCurrentUser = async () => {
+  try {
+    const currentAccount = await account.get();
+    if (!currentAccount) throw Error;
+
+    const currentUser = await tablesDB.listRows({
+      databaseId: appwriteConfig.databaseId,
+      tableId: appwriteConfig.userCollectionId,
+      queries: [Query.equal('$id', currentAccount.$id)],
+    });
+    if (!currentUser) throw Error;
+    return currentUser.rows[0];
+  } catch (error) {
+    console.log(error);
     throw new Error(error as string);
   }
 };
