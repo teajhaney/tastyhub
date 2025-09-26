@@ -16,10 +16,10 @@ export interface Category extends Models.Document {
     description: string;
 }
 
-export interface User extends Models.Document {
-    name: string;
-    email: string;
-    avatar: string;
+export interface User extends Models.DefaultRow {
+  name: string;
+  email: string;
+  avatar: string;
 }
 
 export interface CartCustomization {

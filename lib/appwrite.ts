@@ -75,18 +75,30 @@ export const signIn = async ({ email, password }: SignInParams) => {
 
 export const getCurrentUser = async () => {
   try {
-    const currentAccount = await account.get();
-    if (!currentAccount) throw Error;
+    // Check if we have a valid session first
+    let currentAccount;
 
-    const currentUser = await tablesDB.listRows({
+    currentAccount = await account.get();
+
+    if (!currentAccount || !currentAccount.$id) {
+      console.log('No current account found');
+      return null;
+    }
+
+    //getting current user info with unique email
+    const emailQuery = await tablesDB.listRows({
       databaseId: appwriteConfig.databaseId,
       tableId: appwriteConfig.userCollectionId,
-      queries: [Query.equal('$id', currentAccount.$id)],
+      queries: [Query.equal('email', currentAccount.email)],
     });
-    if (!currentUser) throw Error;
-    return currentUser.rows[0];
+
+    if (emailQuery.rows.length > 0) {
+      console.log('✅ User found with email query:', emailQuery.rows[0]);
+
+      return emailQuery.rows[0];
+    }
   } catch (error) {
-    console.log(error);
-    throw new Error(error as string);
+    console.log('getCurrentUser error:', error);
+    return null;
   }
 };

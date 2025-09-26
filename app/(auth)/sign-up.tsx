@@ -3,7 +3,7 @@ import { createUser } from '@/lib/appwrite';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
-
+import * as sentry from '@sentry/react-native'
 export default function SignUp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '', name: '' });
@@ -22,7 +22,8 @@ export default function SignUp() {
 
       router.replace('/');
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+		Alert.alert('Error', error.message);
+		  sentry.captureException(error);
     } finally {
       setIsSubmitting(false);
     }
