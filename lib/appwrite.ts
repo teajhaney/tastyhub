@@ -49,7 +49,7 @@ export const createUser = async ({
       tableId: appwriteConfig.userCollectionId,
       rowId: ID.unique(),
       data: {
-        $id: newAccount.$id,
+        accountId: newAccount.$id,
         name: newAccount.name,
         email: newAccount.email,
         avatar: avatarUrl,
@@ -85,17 +85,17 @@ export const getCurrentUser = async () => {
       return null;
     }
 
-    //getting current user info with unique email
-    const emailQuery = await tablesDB.listRows({
+    //getting current user info with unique id
+    const currentUser = await tablesDB.listRows({
       databaseId: appwriteConfig.databaseId,
       tableId: appwriteConfig.userCollectionId,
-      queries: [Query.equal('email', currentAccount.email)],
+      queries: [Query.equal('accountId', currentAccount.$id)],
     });
 
-    if (emailQuery.rows.length > 0) {
-      console.log('✅ User found with email query:', emailQuery.rows[0]);
+    if (!currentUser) throw Error;
 
-      return emailQuery.rows[0];
+    if (currentUser.rows.length > 0) {
+      return currentUser.rows[0];
     }
   } catch (error) {
     console.log('getCurrentUser error:', error);
