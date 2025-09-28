@@ -1,7 +1,7 @@
-import { CartButton, MenuCard } from '@/components';
+import { CartButton, Filter, MenuCard, SearchBar } from '@/components';
 import { getCategories, getMenu } from '@/lib/appwrite';
 import useAppwrite from '@/lib/useAppwrite';
-import { MenuItem } from '@/type';
+import { Category, MenuItem } from '@/type';
 import cn from 'clsx';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
@@ -26,7 +26,7 @@ export default function Search() {
   });
   const { data: categories } = useAppwrite({
     fn: getCategories,
-  });
+  }) 
 
   // Remove the useEffect that was causing infinite requests
   // The useAppwrite hook will automatically fetch when params change
@@ -66,8 +66,12 @@ export default function Search() {
               </View>
               <CartButton />
             </View>
-            <Text>Search</Text>
-            <Text>Filter</Text>
+            <Text>
+              <SearchBar />
+            </Text>
+            <Text>
+              <Filter categories={categories! as Category[]} />
+            </Text>
           </View>
         )}
         ListEmptyComponent={() => <Text>No results</Text>}
