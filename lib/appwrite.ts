@@ -1,10 +1,11 @@
-import { CreateUserParams, SignInParams } from '@/type';
+import { CreateUserParams, GetMenuParams, SignInParams } from '@/type';
 import {
   Account,
   Avatars,
   Client,
   ID,
   Query,
+  Storage,
   TablesDB,
 } from 'react-native-appwrite';
 
@@ -13,7 +14,12 @@ export const appwriteConfig = {
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!,
   platform: 'com.seobinim.tastyhub',
   databaseId: '68d54cc0002d429615fb',
+  bucketId: '68d9114e00152be99179',
   userCollectionId: 'user',
+  categoriesCollectionId: 'categories',
+  menuCollectionId: 'menu',
+  customizationCollectionId: 'customizations',
+  menuCustomizationCollectionId: 'menu_customizations',
 };
 
 export const client = new Client();
@@ -24,6 +30,7 @@ client
 
 export const account = new Account(client);
 export const tablesDB = new TablesDB(client);
+export const storage = new Storage(client);
 export const avatars = new Avatars(client);
 
 export const createUser = async ({
@@ -100,5 +107,36 @@ export const getCurrentUser = async () => {
   } catch (error) {
     console.log('getCurrentUser error:', error);
     return null;
+  }
+};
+
+export const getMenu = async ({ category, query }: GetMenuParams) => {
+  try {
+    const queries: string[] = [];
+
+    if (category) queries.push(Query.equal('categories', category));
+    if (query) queries.push(Query.search('name', query));
+
+    const menus = await tablesDB.listRows({
+      databaseId: appwriteConfig.databaseId,
+      tableId: appwriteConfig.menuCollectionId,
+      queries,
+    });
+    return menus.rows;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const categories = await tablesDB.listRows({
+      databaseId: appwriteConfig.databaseId,
+      tableId: appwriteConfig.categoriesCollectionId,
+    });
+
+    return categories.rows;
+  } catch (error) {
+    throw new Error(error as string);
   }
 };
