@@ -66,7 +66,6 @@ const Profile = () => {
             subTitile={'221B Rose Street, Foodville, FL 12345'}
           />
         </View>
-
         <View className="flex gap-3">
           <CustomButton
             title=" Edit profile"
