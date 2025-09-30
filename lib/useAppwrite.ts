@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 
 interface UseAppwriteOptions<T, P extends Record<string, string | number>> {
@@ -43,11 +43,24 @@ const useAppwrite = <T, P extends Record<string, string | number>>({
     [fn]
   );
 
-  useEffect(() => {
-    if (!skip) {
-      fetchData(params);
+  // Create a stable key from params to avoid triggering fetches due to new object identities
+  const paramsKey = useMemo(() => {
+    try {
+      return JSON.stringify(params ?? {});
+    } catch {
+      return '';
     }
-  }, [fetchData, params, skip]);
+  }, [params]);
+
+  // Track last executed key to prevent double-invocations in React StrictMode
+  const lastExecutedKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (skip) return;
+    if (lastExecutedKeyRef.current === paramsKey) return;
+    lastExecutedKeyRef.current = paramsKey;
+    fetchData(params);
+  }, [fetchData, params, paramsKey, skip]);
 
   const refetch = useCallback(
     async (newParams?: P) => {

@@ -26,7 +26,7 @@ export default function Search() {
   });
   const { data: categories } = useAppwrite({
     fn: getCategories,
-  }) 
+  });
 
   // Remove the useEffect that was causing infinite requests
   // The useAppwrite hook will automatically fetch when params change
@@ -52,7 +52,7 @@ export default function Search() {
         columnWrapperClassName="gap-7"
         contentContainerClassName="gap-7 px-5 pb-32"
         ListHeaderComponent={() => (
-          <View className="my-5 gpa-5">
+          <View className="my-5 gap-5">
             <View className="flex-between flex-row w-full">
               <View className="flex-start">
                 <Text className="small-bold uppercase text-primary">

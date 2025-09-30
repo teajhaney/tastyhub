@@ -10,7 +10,6 @@ const CartButton = () => {
         source={images.bag}
         className="size-5"
         resizeMode="contain"
-        tintColor="#fff"
       />
       {totalItems > 0 && (
         <View className="cart-badge">
