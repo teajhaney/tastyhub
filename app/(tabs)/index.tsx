@@ -1,4 +1,8 @@
+import { CartButton } from '@/components';
+import { images, offers } from '@/constants';
+import useAuthStore from '@/store/auth.store';
 import cn from 'clsx';
+import { router } from 'expo-router';
 import { Fragment } from 'react';
 import {
   FlatList,
@@ -10,20 +14,20 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CartButton } from '@/components';
-import { images, offers } from '@/constants';
-import useAuthStore from '@/store/auth.store';
-
 export default function Index() {
   const { user } = useAuthStore(state => state);
-
+  const handlePress = (id: number) => {
+    router.push('/search');
+  };
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FlatList
         ListHeaderComponent={() => (
           <View className="flex-between flex-row w-full my-5">
             <View className="flex-start">
-              <Text className="small-bold text-primary">DELIVER TO</Text>
+              <Text className="small-bold text-primary">
+                DELIVER TO {user?.name.split(' ')[0]}
+              </Text>
               <TouchableOpacity className="flex-center flex-row gap-x-1 mt-0.5">
                 <Text className="paragraph-bold text-dark-100">Nigeria</Text>
                 <Image
@@ -45,6 +49,7 @@ export default function Index() {
           return (
             <View>
               <Pressable
+                onPress={() => handlePress(item.id)}
                 className={cn(
                   'offer-card',
                   isEven ? 'flex-row-reverse' : 'flex-row'

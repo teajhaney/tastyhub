@@ -1,12 +1,14 @@
 import { CustomButton, CustomInput } from '@/components';
-import { createUser } from '@/lib/appwrite';
+import { createUser, getCurrentUser } from '@/lib/appwrite';
+import useAuthStore from '@/store/auth.store';
+import * as sentry from '@sentry/react-native';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
-import * as sentry from '@sentry/react-native'
 export default function SignUp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '', name: '' });
+  const { setIsAuthenticated, setUser } = useAuthStore(state => state);
 
   const submit = async () => {
     const { name, email, password } = form;
@@ -19,11 +21,15 @@ export default function SignUp() {
     try {
       //call appwrite Sign up function
       await createUser({ name, email, password });
-
+      const authedUser = await getCurrentUser();
+      if (authedUser) {
+        setUser(authedUser as any);
+        setIsAuthenticated(true);
+      }
       router.replace('/');
     } catch (error: any) {
-		Alert.alert('Error', error.message);
-		  sentry.captureException(error);
+      Alert.alert('Error', error.message);
+      sentry.captureException(error);
     } finally {
       setIsSubmitting(false);
     }

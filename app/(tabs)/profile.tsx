@@ -1,7 +1,9 @@
 import { CustomButton, CustomHeader } from '@/components';
 import { images } from '@/constants';
+import { signOut } from '@/lib/appwrite';
 import useAuthStore from '@/store/auth.store';
 import { ProfileCardProps } from '@/type';
+import { router } from 'expo-router';
 import React from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,8 +21,18 @@ const ProfileCard = ({ image, title, subTitile }: ProfileCardProps) => (
 );
 
 const Profile = () => {
-  const { user } = useAuthStore();
+  const { user, setUser, setIsAuthenticated } = useAuthStore();
 
+  const handlePress = async () => {
+    try {
+      await signOut();
+    } catch {
+      // noop; proceed to clear local state regardless
+    }
+    setUser(null);
+    setIsAuthenticated(false);
+    router.replace('/sign-in');
+  };
   return (
     <SafeAreaView className="bg-white h-full pb-28 px-5 pt-5">
       <ScrollView className="flex flex-col gap-5">
@@ -77,7 +89,8 @@ const Profile = () => {
             style="bg-[#F14141]/10 border border-[#F14141] p-4"
             textStyle="!font-quicksand-bold !text-[#F14141]"
             leftIcon={images.logout}
-            iconStyle="size-10"
+            iconStyle="size-6"
+            onPress={handlePress}
           />
         </View>
       </ScrollView>

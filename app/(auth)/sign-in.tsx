@@ -1,5 +1,6 @@
 import { CustomButton, CustomInput } from '@/components';
-import { signIn } from '@/lib/appwrite';
+import { getCurrentUser, signIn } from '@/lib/appwrite';
+import useAuthStore from '@/store/auth.store';
 import * as sentry from '@sentry/react-native';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
@@ -8,6 +9,7 @@ import { Alert, Text, View } from 'react-native';
 export default function SignIn() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
+  const { setIsAuthenticated, setUser } = useAuthStore(state => state);
 
   const submit = async () => {
     const { email, password } = form;
@@ -20,10 +22,15 @@ export default function SignIn() {
     try {
       //call appwrite Sign in function
       await signIn({ email, password });
+      // immediately set auth state to prevent redirect loop in Tabs
+      const authedUser = await getCurrentUser();
+      if (authedUser) {
+        setUser(authedUser as any);
+        setIsAuthenticated(true);
+      }
       router.replace('/');
     } catch (error: any) {
-		Alert.alert('Error', error.message);
-		console.log(error)
+      Alert.alert('Error', error.message);
       sentry.captureException(error);
     } finally {
       setIsSubmitting(false);

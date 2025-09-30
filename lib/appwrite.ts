@@ -80,6 +80,14 @@ export const signIn = async ({ email, password }: SignInParams) => {
   }
 };
 
+export const signOut = async () => {
+  try {
+    await account.deleteSessions();
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getCurrentUser = async () => {
   try {
     // Check if we have a valid session first

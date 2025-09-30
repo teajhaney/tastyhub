@@ -66,28 +66,32 @@ export const CATEGORIES = [
 
 export const offers = [
   {
-    id: 2,
+    id: 1,
     title: 'SUMMER COMBO',
     image: burgerOne,
     color: '#D33B0D',
+    categoryName: 'Burger',
   },
   {
-    id: 3,
+    id: 2,
     title: 'BURGER BASH',
     image: burgerTwo,
     color: '#DF5A0C',
+    categoryName: 'Burger',
   },
   {
-    id: 4,
+    id: 3,
     title: 'PIZZA PARTY',
     image: pizzaOne,
     color: '#084137',
+    categoryName: 'Pizza',
   },
   {
-    id: 5,
+    id: 4,
     title: 'BURRITO DELIGHT',
     image: buritto,
     color: '#EB920C',
+    categoryName: 'Burrito',
   },
 ];
 
