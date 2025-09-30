@@ -1,19 +1,19 @@
 import { CustomButtonProps } from '@/type';
-import { Text } from '@react-navigation/elements';
 import cn from 'clsx';
 import React from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 export default function CustomButton({
   onPress,
   title = 'Click Me',
   style,
   textStyle,
-  leftIcon,
+	leftIcon,
+  iconStyle,
   isLoading = false,
 }: CustomButtonProps) {
   return (
     <TouchableOpacity className={cn('custom-btn', style)} onPress={onPress}>
-      {leftIcon}
+      <Image source={leftIcon} resizeMode='contain' className={iconStyle} />
       <View className="flex-center flex-row">
         {isLoading ? (
           <ActivityIndicator size={'small'} color={'#fff'} />
