@@ -12,12 +12,7 @@ export default function Search() {
     query: string;
     category: string;
   }>();
-  const {
-    data: menu,
-    refetch,
-    loading,
-    error,
-  } = useAppwrite({
+  const { data: menu } = useAppwrite({
     fn: getMenu,
     params: {
       category,
